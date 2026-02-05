@@ -48,6 +48,18 @@
 
 ---
 
+## ⚡ ULTRASCHNELLER START
+
+### 🎯 Neu hier? Starten Sie hier:
+
+**→ [`START_HIER.md`](START_HIER.md)** - **3-Schritte-Anleitung für 2-VPS-Setup!**
+
+**Vollautomatisch ohne Interaktion:**
+
+**→ [`AUTOMATISIERTE_INSTALLATION.md`](AUTOMATISIERTE_INSTALLATION.md)** - **Config ausfüllen, Script starten, fertig!**
+
+---
+
 ## 🚀 Schnellstart
 
 ### Option 1: Einfaches Lab-Setup (für Training)
