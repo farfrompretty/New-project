@@ -1,0 +1,33 @@
+Teamserver:
+  Host: {{ teamserver.host }}
+  Port: {{ teamserver.port }}
+  
+  Build:
+    Compiler64: "/usr/bin/x86_64-w64-mingw32-gcc"
+    Compiler86: "/usr/bin/i686-w64-mingw32-gcc"
+    Nasm: "/usr/bin/nasm"
+
+Operators:
+{% for operator in teamserver.operators %}
+  - Name: {{ operator.name }}
+    Password: "{{ operator.password }}"
+{% endfor %}
+
+Listeners:
+{% for listener in teamserver.listeners %}
+  - Name: "{{ listener.name }}"
+    Protocol: {{ listener.protocol }}
+    Hosts:
+{% for host in listener.hosts %}
+      - "{{ host }}"
+{% endfor %}
+    Port: {{ listener.port }}
+    HostBind: 0.0.0.0
+    PortBind: {{ listener.port }}
+    Secure: true
+    
+    Response:
+      Headers:
+        Server: "nginx/1.18.0 (Ubuntu)"
+        Content-Type: "text/html; charset=UTF-8"
+{% endfor %}

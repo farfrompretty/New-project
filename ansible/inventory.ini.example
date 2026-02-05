@@ -1,0 +1,30 @@
+# Ansible Inventory für Havoc C2
+
+[teamservers]
+teamserver1 ansible_host=192.168.1.10 ansible_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa
+
+[redirectors]
+redirector1 ansible_host=192.168.1.20 ansible_user=root redirector_domain=cdn1.example.com
+redirector2 ansible_host=192.168.1.21 ansible_user=root redirector_domain=cdn2.example.com
+redirector3 ansible_host=192.168.1.22 ansible_user=root redirector_domain=cdn3.example.com
+
+[c2:children]
+teamservers
+redirectors
+
+[c2:vars]
+ansible_python_interpreter=/usr/bin/python3
+
+# === TEAMSERVER-SPECIFIC VARS ===
+[teamservers:vars]
+teamserver_port=40056
+listener_port=443
+admin_username=admin
+admin_password=ChangeMe123!
+
+# === REDIRECTOR-SPECIFIC VARS ===
+[redirectors:vars]
+redirector_type=nginx  # nginx, apache, or caddy
+c2_ip=192.168.1.10     # Teamserver IP
+c2_port=443
+admin_email=admin@example.com

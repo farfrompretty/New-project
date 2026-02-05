@@ -1,0 +1,30 @@
+# Terraform Variables für Basic Setup
+# Kopieren Sie diese Datei zu terraform.tfvars und passen Sie an
+
+# API Tokens
+do_token      = "your_digitalocean_api_token_here"
+cf_api_token  = "your_cloudflare_api_token_here"
+
+# Domain
+domain    = "example.com"
+subdomain = "cdn"  # Wird zu: cdn.example.com
+
+# SSH Keys (DigitalOcean Key IDs oder Fingerprints)
+# Finden Sie diese mit: doctl compute ssh-key list
+ssh_keys = [
+  "12:34:56:78:90:ab:cd:ef:...",  # Ihr SSH Key Fingerprint
+]
+
+# Admin Password (optional, wird generiert wenn leer)
+admin_password = ""
+
+# Regionen
+region_teamserver  = "fra1"  # Frankfurt
+region_redirector  = "ams3"  # Amsterdam
+
+# Weitere Regionen:
+# nyc1, nyc3 - New York
+# sfo3 - San Francisco
+# sgp1 - Singapore
+# lon1 - London
+# tor1 - Toronto

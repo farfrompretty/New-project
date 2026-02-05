@@ -12,7 +12,10 @@
 
 | Dokument | Beschreibung | Schwierigkeit |
 |----------|--------------|---------------|
+| **[LOCAL_SETUP_GUIDE.md](LOCAL_SETUP_GUIDE.md)** | **Schritt-für-Schritt auf Ihrem PC/Laptop** | ⭐⭐ |
 | **[HAVOC_C2_SETUP.md](HAVOC_C2_SETUP.md)** | Hauptanleitung für Havoc Installation & Konfiguration | ⭐⭐ |
+| **[PAYLOAD_DEVELOPMENT.md](PAYLOAD_DEVELOPMENT.md)** | **Custom Payloads, BOFs, Evasion-Techniken** | ⭐⭐⭐⭐⭐ |
+| **[POST_EXPLOITATION.md](POST_EXPLOITATION.md)** | **Privilege Escalation, Lateral Movement, Domain Dominance** | ⭐⭐⭐⭐⭐ |
 | **[INFRASTRUCTURE_SETUP.md](INFRASTRUCTURE_SETUP.md)** | Redirectors, Domain-Fronting, Traffic-Filterung | ⭐⭐⭐⭐ |
 | **[SSL_CERTIFICATE_SETUP.md](SSL_CERTIFICATE_SETUP.md)** | Let's Encrypt, kommerzielle Zertifikate, Automation | ⭐⭐ |
 | **[OPSEC_GUIDE.md](OPSEC_GUIDE.md)** | Operations Security, Anonymität, Best Practices | ⭐⭐⭐⭐⭐ |
@@ -26,10 +29,22 @@
 | **[install_havoc_teamserver.sh](scripts/install_havoc_teamserver.sh)** | Automatische Teamserver-Installation |
 | **[install_redirector_apache.sh](scripts/install_redirector_apache.sh)** | Apache Redirector Setup |
 | **[install_redirector_nginx.sh](scripts/install_redirector_nginx.sh)** | Nginx Redirector Setup |
+| **[install_redirector_caddy.sh](scripts/install_redirector_caddy.sh)** | Caddy Redirector Setup (automatisches HTTPS!) |
+| **[install_redirector_traefik.sh](scripts/install_redirector_traefik.sh)** | Traefik Redirector Setup |
 | **[harden_server.sh](scripts/harden_server.sh)** | Server-Härtung (SSH, Firewall, Fail2Ban) |
 | **[cleanup_infrastructure.sh](scripts/cleanup_infrastructure.sh)** | Post-Engagement Cleanup |
 
 📖 **[Scripts README](scripts/README.md)** - Detaillierte Anleitung für alle Skripte
+
+### Infrastructure-as-Code
+
+| Typ | Beschreibung |
+|-----|--------------|
+| **[Terraform](terraform/)** | Automatisches Deployment auf DigitalOcean, AWS, Vultr, Hetzner |
+| **[Ansible](ansible/)** | Configuration Management für bestehende Server |
+
+📖 **[Terraform README](terraform/README.md)** - Komplette Infrastruktur mit einem Befehl  
+📖 **[Ansible README](ansible/README.md)** - Orchestrierung und Updates
 
 ---
 
@@ -100,19 +115,22 @@ curl https://ihre-domain.com/  # Sollte Webseite zeigen
 
 ## 📖 Empfohlene Lesereihenfolge
 
-### Für Anfänger:
+### Für Anfänger (Lokales Setup):
 
-1. **[HAVOC_C2_SETUP.md](HAVOC_C2_SETUP.md)** - Verstehen Sie die Basics
-2. **[HOSTING_GUIDE.md](HOSTING_GUIDE.md)** - Wählen Sie einen VPS-Anbieter
-3. **[Scripts README](scripts/README.md)** - Nutzen Sie Automatisierungs-Skripte
-4. **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Bei Problemen
+1. **[LOCAL_SETUP_GUIDE.md](LOCAL_SETUP_GUIDE.md)** - **Schritt-für-Schritt auf Ihrem PC**
+2. **[HAVOC_C2_SETUP.md](HAVOC_C2_SETUP.md)** - Verstehen Sie die Basics
+3. **[PAYLOAD_DEVELOPMENT.md](PAYLOAD_DEVELOPMENT.md)** - Payloads anpassen
+4. **[POST_EXPLOITATION.md](POST_EXPLOITATION.md)** - Techniken lernen
+5. **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Bei Problemen
 
-### Für Fortgeschrittene:
+### Für Fortgeschrittene (Production):
 
-1. **[INFRASTRUCTURE_SETUP.md](INFRASTRUCTURE_SETUP.md)** - Redirectors & Domain-Fronting
-2. **[SSL_CERTIFICATE_SETUP.md](SSL_CERTIFICATE_SETUP.md)** - Zertifikat-Management
-3. **[OPSEC_GUIDE.md](OPSEC_GUIDE.md)** - Maximale Sicherheit
-4. **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Monitoring & Wartung
+1. **[HOSTING_GUIDE.md](HOSTING_GUIDE.md)** - VPS-Anbieter wählen
+2. **[INFRASTRUCTURE_SETUP.md](INFRASTRUCTURE_SETUP.md)** - Redirectors & Domain-Fronting
+3. **[SSL_CERTIFICATE_SETUP.md](SSL_CERTIFICATE_SETUP.md)** - Zertifikat-Management
+4. **[OPSEC_GUIDE.md](OPSEC_GUIDE.md)** - Maximale Sicherheit
+5. **[Terraform](terraform/)** oder **[Ansible](ansible/)** - Automatisierung
+6. **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Monitoring & Wartung
 
 ---
 
@@ -292,24 +310,30 @@ Diese Dokumentation ist für:
 Verbesserungsvorschläge? Issues? Öffnen Sie ein Issue oder Pull Request!
 
 **Bereiche für Contributions:**
-- Zusätzliche Redirector-Profile (Nginx, Caddy, etc.)
-- Terraform/Ansible-Automatisierung
 - Docker/Kubernetes-Deployments
 - Weitere Hosting-Provider-Reviews
 - Übersetzungen in andere Sprachen
+- Zusätzliche Post-Ex-Module
+- CI/CD-Pipelines für Payloads
 
 ---
 
 ## 📝 Changelog
 
-**Version 1.0 (2026-02-05)**
-- ✅ Initiale Version
+**Version 2.0 (2026-02-05) - ERWEITERT**
+- ✅ **NEU:** Lokale PC Setup-Anleitung (Schritt-für-Schritt)
+- ✅ **NEU:** Payload-Development-Guide (BOFs, Custom Modules)
+- ✅ **NEU:** Post-Exploitation-Techniken (Privilege Escalation, Lateral Movement)
+- ✅ **NEU:** Caddy Redirector-Skript (automatisches HTTPS)
+- ✅ **NEU:** Traefik Redirector-Skript
+- ✅ **NEU:** Terraform-Automatisierung (Multi-Provider)
+- ✅ **NEU:** Ansible-Playbooks (Complete Orchestration)
 - ✅ Vollständige Havoc C2 Setup-Dokumentation
-- ✅ Redirector-Guides (Apache & Nginx)
+- ✅ Redirector-Guides (Apache, Nginx, Caddy, Traefik)
 - ✅ SSL/TLS-Setup mit Let's Encrypt
 - ✅ OPSEC Best Practices
 - ✅ Budget Hosting-Vergleich
-- ✅ 5 Automatisierungs-Skripte
+- ✅ 7 Automatisierungs-Skripte
 - ✅ Umfassender Troubleshooting-Guide
 
 ---

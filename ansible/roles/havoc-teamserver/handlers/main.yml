@@ -1,0 +1,11 @@
+---
+# Handlers for havoc-teamserver role
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: Restart Havoc Teamserver
+  systemd:
+    name: havoc-teamserver
+    state: restarted
