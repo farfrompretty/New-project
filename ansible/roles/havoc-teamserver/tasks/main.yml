@@ -1,0 +1,99 @@
+---
+# Role: havoc-teamserver
+# Installiert und konfiguriert Havoc C2 Teamserver
+
+- name: Install dependencies
+  apt:
+    name:
+      - git
+      - build-essential
+      - cmake
+      - golang-go
+      - mingw-w64
+      - nasm
+      - libboost-all-dev
+      - libssl-dev
+      - libncurses5-dev
+      - libgdbm-dev
+      - libreadline-dev
+      - libffi-dev
+      - libsqlite3-dev
+      - libbz2-dev
+    state: present
+    update_cache: yes
+
+- name: Check if Havoc is already cloned
+  stat:
+    path: "{{ havoc_install_path }}"
+  register: havoc_dir
+
+- name: Clone Havoc repository
+  git:
+    repo: "{{ havoc_repo }}"
+    dest: "{{ havoc_install_path }}"
+    version: main
+  when: not havoc_dir.stat.exists
+
+- name: Download Go dependencies
+  shell: |
+    cd {{ havoc_install_path }}/teamserver
+    go mod download golang.org/x/sys || true
+    go mod download github.com/ugorji/go || true
+  args:
+    executable: /bin/bash
+
+- name: Build Teamserver
+  make:
+    chdir: "{{ havoc_install_path }}"
+    target: ts-build
+  register: build_result
+  failed_when: build_result.rc != 0
+
+- name: Create profiles directory
+  file:
+    path: "{{ havoc_install_path }}/profiles"
+    state: directory
+    mode: '0755'
+
+- name: Generate Teamserver configuration
+  template:
+    src: havoc.yaotl.j2
+    dest: "{{ havoc_profile_path }}"
+    mode: '0600'
+
+- name: Create systemd service
+  template:
+    src: havoc-teamserver.service.j2
+    dest: /etc/systemd/system/havoc-teamserver.service
+    mode: '0644'
+  notify: Reload systemd
+
+- name: Enable and start Havoc Teamserver
+  systemd:
+    name: havoc-teamserver
+    enabled: yes
+    state: started
+    daemon_reload: yes
+
+- name: Configure firewall for Teamserver
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop:
+    - "{{ teamserver.port }}"
+    - "{{ teamserver.listeners[0].port }}"
+
+- name: Wait for Teamserver to start
+  wait_for:
+    port: "{{ teamserver.port }}"
+    delay: 5
+    timeout: 60
+
+- name: Display Teamserver information
+  debug:
+    msg: |
+      Havoc Teamserver installed and running
+      Connect to: {{ ansible_default_ipv4.address }}:{{ teamserver.port }}
+      Username: {{ teamserver.operators[0].name }}
+      Password: {{ teamserver.operators[0].password }}

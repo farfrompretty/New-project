@@ -1,0 +1,72 @@
+---
+# Main Playbook für vollständiges Havoc C2 Deployment
+#
+# Usage: ansible-playbook -i inventory.ini site.yml
+
+- name: Deploy Havoc C2 Infrastructure
+  hosts: all
+  become: yes
+  gather_facts: yes
+  
+  pre_tasks:
+    - name: Display deployment information
+      debug:
+        msg: "Deploying Havoc C2 Infrastructure. This may take 10-15 minutes."
+  
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      when: ansible_os_family == "Debian"
+
+- name: Setup Teamservers
+  hosts: teamservers
+  become: yes
+  roles:
+    - common
+    - harden
+    - havoc-teamserver
+  tags:
+    - teamserver
+
+- name: Setup Redirectors
+  hosts: redirectors
+  become: yes
+  roles:
+    - common
+    - harden
+    - ssl-letsencrypt
+    - "{{ redirector_type | default('redirector-nginx') }}"
+  tags:
+    - redirector
+
+- name: Final tasks
+  hosts: all
+  become: yes
+  tasks:
+    - name: Reboot if required
+      reboot:
+        reboot_timeout: 300
+      when: reboot_required is defined and reboot_required
+
+    - name: Display connection information
+      debug:
+        msg: |
+          === HAVOC C2 INFRASTRUCTURE DEPLOYED ===
+          
+          Teamservers:
+          {% for host in groups['teamservers'] %}
+            - {{ hostvars[host]['inventory_hostname'] }}: {{ hostvars[host]['ansible_default_ipv4']['address'] }}
+          {% endfor %}
+          
+          Redirectors:
+          {% for host in groups['redirectors'] %}
+            - {{ hostvars[host]['inventory_hostname'] }}: {{ hostvars[host]['ansible_default_ipv4']['address'] }}
+          {% endfor %}
+          
+          Next Steps:
+            1. Connect Havoc Client to Teamserver IP:40056
+            2. Test Redirectors: curl https://YOUR_DOMAIN/
+      run_once: yes
+      delegate_to: localhost

@@ -1,0 +1,16 @@
+[Unit]
+Description=Havoc C2 Teamserver
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory={{ havoc_install_path }}
+ExecStart={{ havoc_install_path }}/havoc server --profile {{ havoc_profile_path }} -v
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

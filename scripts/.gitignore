@@ -1,0 +1,16 @@
+# Git Ignore für Scripts-Verzeichnis
+
+# WICHTIG: Nie Credentials oder Config in Git!
+config
+*.txt
+*_CREDENTIALS.txt
+TEAMSERVER_CREDENTIALS.txt
+REDIRECTOR_CREDENTIALS.txt
+
+# Backup-Dateien
+*.bak
+*.backup
+*.old
+
+# Log-Dateien
+*.log

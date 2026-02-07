@@ -1,0 +1,79 @@
+#cloud-config
+# Havoc Teamserver Cloud-Init Script
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - git
+  - build-essential
+  - cmake
+  - golang-go
+  - mingw-w64
+  - nasm
+  - libboost-all-dev
+  - libssl-dev
+  - ufw
+
+runcmd:
+  # Clone Havoc
+  - git clone https://github.com/HavocFramework/Havoc.git /opt/Havoc
+  
+  # Build Teamserver
+  - cd /opt/Havoc/teamserver && go mod download || true
+  - cd /opt/Havoc && make ts-build
+  
+  # Create config
+  - mkdir -p /opt/Havoc/profiles
+  - |
+    cat > /opt/Havoc/profiles/havoc.yaotl <<'EOF'
+    Teamserver:
+      Host: 0.0.0.0
+      Port: 40056
+      Build:
+        Compiler64: "x86_64-w64-mingw32-gcc"
+        Compiler86: "i686-w64-mingw32-gcc"
+        Nasm: "/usr/bin/nasm"
+    Operators:
+      - Name: admin
+        Password: "${admin_password}"
+    Listeners:
+      - Name: "HTTPS Listener"
+        Protocol: https
+        Hosts:
+          - "0.0.0.0"
+        Port: 443
+        HostBind: 0.0.0.0
+        PortBind: 443
+        Secure: true
+    EOF
+  
+  # Create systemd service
+  - |
+    cat > /etc/systemd/system/havoc-teamserver.service <<'EOF'
+    [Unit]
+    Description=Havoc C2 Teamserver
+    After=network.target
+    [Service]
+    Type=simple
+    User=root
+    WorkingDirectory=/opt/Havoc
+    ExecStart=/opt/Havoc/havoc server --profile /opt/Havoc/profiles/havoc.yaotl -v
+    Restart=on-failure
+    RestartSec=10
+    [Install]
+    WantedBy=multi-user.target
+    EOF
+  
+  # Enable and start
+  - systemctl daemon-reload
+  - systemctl enable havoc-teamserver
+  - systemctl start havoc-teamserver
+  
+  # Firewall
+  - ufw --force enable
+  - ufw allow 22/tcp
+  - ufw allow 40056/tcp
+  - ufw allow 443/tcp
+
+final_message: "Havoc Teamserver deployment complete after $UPTIME seconds"
